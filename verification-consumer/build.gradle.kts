@@ -11,7 +11,7 @@ kotlin {
     iosX64()
     ohosArm64 { binaries.sharedLib() }
     sourceSets.commonMain.dependencies {
-        implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-3")
+        implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-4")
     }
 }
 android {

@@ -1,4 +1,4 @@
 jdk:
   - openjdk17
 install:
-  - bash projects/gradlew -p ohos-probe :koin-core:publishToMavenLocal --no-daemon
+  - bash jitpack-install.sh

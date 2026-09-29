@@ -1,16 +1,16 @@
 # Koin Core OHOS 适配
 
-此分支基于上游 `4.1.1`，使用 Kotlin `2.2.21-1.0.0`。独立 `ohos-probe` 构建发布 JVM（Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体，复用上游 JVM/Native 源码。三端共用请使用 `-3`。
+此分支基于上游 `4.1.1`，使用 Kotlin `2.2.21-1.0.0`。独立 `ohos-probe` 构建发布 JVM（Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体，复用上游 JVM/Native 源码。三端共用请使用 `-4`。
 
 ```kotlin
 // settings.gradle.kts 的 dependencyResolutionManagement.repositories
 maven { url = uri("https://jitpack.io") }
 
 // 三端共享模块的 commonMain.dependencies
-implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-3")
+implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-4")
 ```
 
-`Stately 2.1.0-ohos-2.2.21-6` 是传递依赖，Gradle 根据 `.module` 元数据选择各端变体。此坐标仅提供 Koin Core；若同时使用官方 Koin Compose，需确保依赖图中没有官方 `io.insert-koin:koin-core` 的重复类。
+`Stately 2.1.0-ohos-2.2.21-7` 是传递依赖，Gradle 根据 `.module` 元数据选择各端变体。iOS KLIB 在 macOS 构建，GitHub Release 保存构建包，由 JitPack 提供 Maven 依赖。此坐标仅提供 Koin Core；若同时使用官方 Koin Compose，需确保依赖图中没有官方 `io.insert-koin:koin-core` 的重复类。
 
 ## 构建与验证
 

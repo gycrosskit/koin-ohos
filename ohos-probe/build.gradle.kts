@@ -4,7 +4,7 @@ plugins {
 
 subprojects {
     group = "com.github.gycrosskit.koin-ohos"
-    version = providers.environmentVariable("VERSION").orElse("4.1.1-ohos-2.2.21-3").get()
+    version = providers.environmentVariable("VERSION").orElse("4.1.1-ohos-2.2.21-4").get()
     plugins.apply("maven-publish")
     extensions.configure<org.gradle.api.publish.PublishingExtension> {
         repositories.maven {
