@@ -1,91 +1,29 @@
-> `gycrosskit` 的鸿蒙适配与依赖接入见 [OHOS_PORT.md](OHOS_PORT.md)；以下是上游 Koin 文档。
+# Koin Core OpenHarmony 适配
 
-![logo](./docs/img/koin_main_logo.png)
+本分支基于上游 Koin 4.1.1，使用 Kotlin `2.2.21-1.0.0`，为 Android、iOS、OpenHarmony 的 KMP 共享模块提供 Koin Core。详细实现、构建命令和验证边界见 [OHOS_PORT.md](OHOS_PORT.md)；上游英文介绍保存在 [README_EN.md](README_EN.md)。
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
-![Github Actions](https://github.com/InsertKoinIO/koin/actions/workflows/build.yml/badge.svg)
-[![Apache 2 License](https://img.shields.io/github/license/InsertKoinIO/koin)](https://github.com/InsertKoinIO/koin/blob/main/LICENSE.txt)
-[![Slack channel](https://img.shields.io/badge/Chat-Slack-orange.svg?style=flat&logo=slack)](https://kotlinlang.slack.com/messages/koin/)
+## 引入依赖
 
-[![Free Monitoring](https://img.shields.io/badge/Kotzilla.io-Free%20Monitoring-brightgreen?style=flat&logo=kotlin&logoColor=white)]([https://forms.gle/YOUR-FORM-ID](https://bit.ly/koin_opensource_monitoring))
+在 `settings.gradle.kts` 的 `dependencyResolutionManagement.repositories` 中加入 JitPack：
 
+```kotlin
+maven { url = uri("https://jitpack.io") }
+```
 
-# What is KOIN? ✨
- 
-Koin is a pragmatic, lightweight dependency injection framework for Kotlin developers, developed by [Kotzilla](https://kotzilla.io) and open-source [contributors](https://github.com/InsertKoinIO/koin/graphs/contributors).
+在共享模块中引入：
 
-`Koin is a DSL, a light container and a pragmatic API`
+```kotlin
+commonMain.dependencies {
+    implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-4")
+}
+```
 
+此版本提供 JVM（供 Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体。`stately-ohos` 是传递依赖；Gradle 根据发布的 KMP 元数据选择平台产物。iOS KLIB 在 macOS 上构建，版本化归档由 GitHub Release 保存，再经 JitPack 提供 Maven 依赖。
 
-## Setup & Current Version 📦
+## 范围与验证
 
-Follow the dedicated [setup page](https://insert-koin.io/docs/setup/koin) to setup Koin for your project.
-Here are the currently available Koin versions:
+本分支只发布 `koin-core`，不包含 `koin-compose`、`koin-compose-viewmodel` 或 Kuikly ViewModel 生命周期接入。若同时使用官方 Koin Compose，请检查依赖图中是否引入另一份 `io.insert-koin:koin-core`。
 
-- **Stable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core/4.1.0)](https://mvnrepository.com/artifact/io.insert-koin/koin-core/4.1.0)
-- **Unstable** Version : [![Maven Central](https://img.shields.io/maven-central/v/io.insert-koin/koin-core)](https://mvnrepository.com/artifact/io.insert-koin/koin-core)
+已验证 Android 编译、iOS KLIB 编译与模拟器 Framework 链接、OHOS 动态库链接及 JVM 注入检查；iOS/OHOS 设备运行尚未验证。验证命令见 [OHOS_PORT.md](OHOS_PORT.md)。
 
-Take a look at:
-- [Release Upgrade Guide](https://insert-koin.io/docs/support/releases) to anticipate your next version upgrade.
-- [Versioning](https://insert-koin.io/docs/support/)
-- [API Stability](https://insert-koin.io/docs/support/api-stability)
-
-## Community & Enterprise Support 💬
-
-- Come talk on slack [#koin](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin) channel
-- Post your question on [Stackoverflow](https://stackoverflow.com/questions/tagged/koin)
-- Found a bug or a problem? Open an issue on [Github issues](https://github.com/InsertKoinIO/koin/issues)
-- Opt into [Koin 3.5 LTS](https://kotzilla.io/koin-lts) SLA-backed updates, long-term maintenance, and direct access to Kotzilla experts
-
-## Debugging & Performance Monitoring 🛠️
-
-- **Koin Plugin** can be freely downloaded on [Jetbrains Marketplace](https://plugins.jetbrains.com/plugin/26131-koin-dependency-injection-official-/versions/stable)
-> The pragmatic Kotlin and Kotlin Multiplatform Dependency Injection framework now with native support for IntelliJ IDEA and Android Studio.
-
-- **Kotzilla Platform** Free signup on [Kotzilla](https://kotzilla.io)
-> is a console-based suite with connected cloud services that visualizes your Koin module structure, monitors runtime performance and memory metrics, provides advanced debugging and tracing, and seamlessly integrates with Kotlin Multiplatform projects. 
-
-### 🚀 Free Monitoring for Koin Apps
-
-Kotzilla.io — the team behind [Koin](https://insert-koin.io) — offers **free monitoring** for any open source Android or KMP app using Koin and published on the Google Play Store.
-
-👉 [Apply for Free Monitoring](https://bit.ly/koin_opensource_monitoring)
-
-## Latest News & Resources 🌐
-- Official Website: [insert-koin.io](https://insert-koin.io)
-- Twitter: [@insertkoin_io](https://twitter.com/insertkoin_io)
-- Blog: [Koin Developers](https://blog.insert-koin.io)
-- Newsletter: [Koin Newsletter](https://bit.ly/koin_newsletter)
-
-## Koin Tutorials 🚀
-
-You can find here tutorials to help you learn and get started with the Koin framework:
-- [Kotlin](https://insert-koin.io/docs/quickstart/kotlin)
-- [Kotlin with Koin Annotations](https://insert-koin.io/docs/quickstart/kotlin-annotations)
-- [Android](https://insert-koin.io/docs/quickstart/android-viewmodel)
-- [Android with Koin Annotations](https://insert-koin.io/docs/quickstart/android-annotations)
-- [Android Jetpack Compose](https://insert-koin.io/docs/quickstart/android-compose)
-- [Kotlin Multiplatform](https://insert-koin.io/docs/quickstart/kmp)
-- [Ktor](https://insert-koin.io/docs/quickstart/ktor)
-
-## Contributing 🛠
-
-Want to help or share a proposal about Koin? Problem with a specific feature? 
-
-- Open an issue to explain the issue you want to solve [Open an issue](https://github.com/InsertKoinIO/koin/issues)
-- Come talk on slack [#koin-dev](https://kotlinlang.slack.com/?redir=%2Fmessages%2Fkoin-dev) channel
-- After discussion to validate your ideas, you can open a PR or even a draft PR if the contribution is a big one [Current PRs](https://github.com/InsertKoinIO/koin/pulls)
-
-Additional readings about basic setup: https://github.com/InsertKoinIO/koin/blob/master/CONTRIBUTING.adoc
-
-### Contributors
-
-Thank you all for your work! ❤️
-
-<a href="https://github.com/InsertKoinIO/koin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=InsertKoinIO/koin" />
-</a>
-
-## OpenCollective - Sponsorship ❤️
-
-Support this project by becoming a sponsor and be displayed on the offcial website. [[Help us and Become a sponsor!](https://opencollective.com/koin#sponsor)]
+许可证见 [LICENSE](LICENSE)。
