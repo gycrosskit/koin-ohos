@@ -3,6 +3,8 @@ plugins {
     id("com.android.library") version "8.10.1"
 }
 
+val koinCoreVersion = providers.gradleProperty("koinCoreVersion").orElse("4.1.1-ohos-2.2.21-5").get()
+
 kotlin {
     jvm()
     androidTarget()
@@ -11,7 +13,7 @@ kotlin {
     iosX64()
     ohosArm64 { binaries.sharedLib() }
     sourceSets.commonMain.dependencies {
-        implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-4")
+        implementation("com.github.gycrosskit.koin-ohos:koin-core:$koinCoreVersion")
     }
 }
 android {

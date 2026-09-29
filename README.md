@@ -14,7 +14,7 @@ maven { url = uri("https://jitpack.io") }
 
 ```kotlin
 commonMain.dependencies {
-    implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-4")
+    implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-5")
 }
 ```
 
@@ -22,7 +22,20 @@ commonMain.dependencies {
 
 ## 范围与验证
 
-本分支只发布 `koin-core`，不包含 `koin-compose`、`koin-compose-viewmodel` 或 Kuikly ViewModel 生命周期接入。若同时使用官方 Koin Compose，请检查依赖图中是否引入另一份 `io.insert-koin:koin-core`。
+本分支只发布 `koin-core`，不包含 `koin-compose`、`koin-compose-viewmodel` 或 Kuikly ViewModel 生命周期接入。新版在 JitPack Maven 坐标下保留上游 `io.insert-koin` KLIB 身份；传递的 Stately 版本也保留 `co.touchlab` KLIB 身份。与官方 Koin Compose 4.1.1 同用时，在消费模块替换官方 Core 与 Stately Maven 依赖，确保每个 Native KLIB 只有一份：
+
+```kotlin
+configurations.configureEach {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("io.insert-koin:koin-core"))
+            .using(module("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-5"))
+        listOf("stately-strict", "stately-concurrency", "stately-concurrent-collections").forEach { name ->
+            substitute(module("co.touchlab:$name"))
+                .using(module("com.github.gycrosskit.stately-ohos:$name:2.1.0-ohos-2.2.21-8"))
+        }
+    }
+}
+```
 
 已验证 Android 编译、iOS KLIB 编译与模拟器 Framework 链接、OHOS 动态库链接及 JVM 注入检查；iOS/OHOS 设备运行尚未验证。验证命令见 [OHOS_PORT.md](OHOS_PORT.md)。
 

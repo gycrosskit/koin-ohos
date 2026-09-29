@@ -3,7 +3,7 @@ set -euo pipefail
 
 archive=koin-maven.tar.gz
 curl -fL --retry 3 -o "$archive" "https://github.com/gycrosskit/koin-ohos/releases/download/${VERSION}/${archive}"
-echo "b45fb84787f52726c2ff777809dd239f15386878a842b819821fc9d4d3a8c34c  $archive" | sha256sum -c -
+echo "eb895757f866e12a8f8a965af1e6d608b2e61511d6088ad536b4821412effb55  $archive" | sha256sum -c -
 mkdir -p "$HOME/.m2/repository" build/release-maven
 tar -xzf "$archive" -C "$HOME/.m2/repository"
 tar -xzf "$archive" -C build/release-maven
