@@ -10,12 +10,13 @@ maven { url = uri("https://jitpack.io") }
 implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-5")
 ```
 
-`Stately 2.1.0-ohos-2.2.21-8` 是传递依赖，Gradle 根据 `.module` 元数据选择各端变体。iOS KLIB 在 macOS 构建，GitHub Release 保存构建包，由 JitPack 提供 Maven 依赖。构建时使用上游 `io.insert-koin` 生成 KLIB 身份，Maven Publication 使用 JitPack 组名；Stately 同理保留 `co.touchlab` KLIB 身份。与官方 Koin Compose 同用时，还需按 [README](README.md#范围与验证) 替换官方 Core 与 Stately 的 Maven 依赖，避免重复 KLIB。
+`Stately 2.1.0-ohos-2.2.21-9` 是传递依赖，Gradle 根据 `.module` 元数据选择各端变体。iOS KLIB 在 macOS 构建，GitHub Release 保存构建包，由 JitPack 提供 Maven 依赖。构建时使用上游 `io.insert-koin` 生成 KLIB 身份，Maven Publication 使用 JitPack 组名；Stately 同理保留 `co.touchlab` KLIB 身份。与官方 Koin Compose 同用时，还需按 [README](README.md#范围与验证) 替换官方 Core 与 Stately 的 Maven 依赖，避免重复 KLIB。
 
 ## 构建与验证
 
 ```bash
 bash projects/gradlew -p ohos-probe :koin-core:publishAllPublicationsToGycrosskitRepository
+COPYFILE_DISABLE=1 tar -czf koin-maven.tar.gz -C build/release-maven .
 
 # 独立消费者仅通过 Maven 坐标解析，不引用本仓库源码。
 # 需要 Android SDK（ANDROID_HOME）、Xcode 及 OHOS Native 工具链。

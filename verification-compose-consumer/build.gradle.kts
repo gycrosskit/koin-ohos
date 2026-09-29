@@ -4,7 +4,7 @@ plugins {
 }
 
 val coreVersion = providers.gradleProperty("koinCoreVersion").orElse("4.1.1-ohos-2.2.21-5").get()
-val statelyVersion = providers.gradleProperty("statelyVersion").orElse("2.1.0-ohos-2.2.21-8").get()
+val statelyVersion = providers.gradleProperty("statelyVersion").orElse("2.1.0-ohos-2.2.21-9").get()
 val forkedCore = "com.github.gycrosskit.koin-ohos:koin-core:$coreVersion"
 
 configurations.configureEach {

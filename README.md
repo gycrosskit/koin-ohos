@@ -31,7 +31,7 @@ configurations.configureEach {
             .using(module("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-5"))
         listOf("stately-strict", "stately-concurrency", "stately-concurrent-collections").forEach { name ->
             substitute(module("co.touchlab:$name"))
-                .using(module("com.github.gycrosskit.stately-ohos:$name:2.1.0-ohos-2.2.21-8"))
+                .using(module("com.github.gycrosskit.stately-ohos:$name:2.1.0-ohos-2.2.21-9"))
         }
     }
 }
