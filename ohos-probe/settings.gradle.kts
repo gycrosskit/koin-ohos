@@ -9,9 +9,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        maven {
-            url = uri(providers.gradleProperty("statelyMavenRepo").orElse("https://gycrosskit.github.io/stately-ohos/maven").get())
-        }
+        maven(providers.gradleProperty("statelyMavenRepo").orElse("https://jitpack.io").get())
         maven("https://maven.eazytec-cloud.com/nexus/repository/maven-public/")
         maven("https://mirrors.tencent.com/nexus/repository/maven-public/")
         mavenCentral()
