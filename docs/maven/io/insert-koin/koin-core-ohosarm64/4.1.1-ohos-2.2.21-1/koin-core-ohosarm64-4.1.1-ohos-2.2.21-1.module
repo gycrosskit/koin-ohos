@@ -1,0 +1,87 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../koin-core/4.1.1-ohos-2.2.21-1/koin-core-4.1.1-ohos-2.2.21-1.module",
+    "group": "io.insert-koin",
+    "module": "koin-core",
+    "version": "4.1.1-ohos-2.2.21-1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.11"
+    }
+  },
+  "variants": [
+    {
+      "name": "ohosArm64ApiElements-published",
+      "attributes": {
+        "artifactType": "org.jetbrains.kotlin.klib",
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.native.target": "ohos_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21-1.0.0"
+          }
+        },
+        {
+          "group": "co.touchlab",
+          "module": "stately-concurrency",
+          "version": {
+            "requires": "2.1.0-ohos-2.2.21-1"
+          }
+        },
+        {
+          "group": "co.touchlab",
+          "module": "stately-concurrent-collections",
+          "version": {
+            "requires": "2.1.0-ohos-2.2.21-1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "koin-core-ohosArm64Main-4.1.1-ohos-2.2.21-1.klib",
+          "url": "koin-core-ohosarm64-4.1.1-ohos-2.2.21-1.klib",
+          "size": 235137,
+          "sha512": "05a5367aa8203dbd2ec76cad9e7d51e2cda1119bb58a69120c8f1867e775375e3a689b37fd52ddea94bdcb7b8fb0c8eb89a047bc66fffdc6d69358a7caa6e676",
+          "sha256": "448c005109eeb3e20879d3e3d408f32cc31f2c97c31b6e3d1d79e3a800a196d1",
+          "sha1": "d1728992be875fee8827297d4b01e03b5c405f06",
+          "md5": "dc59b4b02152c3f98df85b5262cf8f00"
+        }
+      ]
+    },
+    {
+      "name": "ohosArm64SourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "non-jvm",
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.native.target": "ohos_arm64",
+        "org.jetbrains.kotlin.platform.type": "native"
+      },
+      "files": [
+        {
+          "name": "koin-core-ohosarm64-4.1.1-ohos-2.2.21-1-sources.jar",
+          "url": "koin-core-ohosarm64-4.1.1-ohos-2.2.21-1-sources.jar",
+          "size": 74792,
+          "sha512": "1974a14f0d31e888823f515f72df923f77d3e4d0ff225cf4184a742566f1656fa16595b485ac630458598ae3db58481ec0f95f31a9073902f71e2c09680cb251",
+          "sha256": "f2527da980ebf12caaf7e4925846e3866574c902f0c37fa55dfccb287454124c",
+          "sha1": "b9b6ae39d595d0612ee3e5d77b469d94b2411c12",
+          "md5": "1db2c17423c59148134f1bca48e78df7"
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+> `gycrosskit` 的鸿蒙适配与依赖接入见 [OHOS_PORT.md](OHOS_PORT.md)；以下是上游 Koin 文档。
+
 ![logo](./docs/img/koin_main_logo.png)
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
