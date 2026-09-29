@@ -4,7 +4,7 @@ plugins {
 
 subprojects {
     group = "io.insert-koin"
-    version = "4.1.1-ohos-2.2.21-1"
+    version = "4.1.1-ohos-2.2.21-2"
     plugins.apply("maven-publish")
     extensions.configure<org.gradle.api.publish.PublishingExtension> {
         repositories.maven {
