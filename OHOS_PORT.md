@@ -25,4 +25,6 @@ bash projects/gradlew -p verification-compose-consumer linkDebugFrameworkIosSimu
 
 验证范围是实际 Android Gradle Plugin `androidTarget()` 解析和编译、iOS KLIB 编译与模拟器 Framework 链接、OHOS 动态库链接，以及 JVM 运行单例/工厂注入检查。新增的 Compose 消费工程专门覆盖 [Issue #4](https://github.com/gycrosskit/koin-ohos/issues/4) 的 iOS 默认缓存链接。设备运行尚未验证。此分支只发布 Koin Core，不包含 `koin-compose`、`koin-compose-viewmodel` 或 Kuikly ViewModel 生命周期接入。
 
-本次发布准备补齐根 `metadataSourcesElements` 正规化，并在归档前重算已有 `.module` 校验和；JitPack 安装器不再改写归档字节。已发布版本的 API/Native 变体可用，但来源变体 URL 被改写为 API JAR；不能把编译通过视为所有变体正确。新版本须重新构建归档、核对引用/校验值并更新安装器 SHA，不覆盖旧标签或归档。回归入口：`python3 scripts/test-jitpack-metadata.py`。
+`4.1.1-ohos-2.2.21-6` 与配套 Stately `2.1.0-ohos-2.2.21-10` 已从真实 JitPack 坐标通过上述消费者验证，包括 iOS arm64/模拟器 Framework、OHOS 动态库、JVM 注入断言及默认 Native 缓存的官方 Compose 混用链接。
+
+归档发布前规范化根 `metadataSourcesElements` 并重算校验和，安装器只安装校验后的相同字节。6 个真实远程 publication 的 POM、全部变体文件、大小、四种声明哈希、ZIP CRC、available-at 和内部依赖均通过；Release 重下载 SHA-256 一致。JitPack 额外生成的 root identity redirect 与高阶 sidecar 的 404 单列为渠道边界，公开 MD5/SHA-1 及必要变体引用正常。回归入口：`python3 scripts/test-jitpack-metadata.py`。旧标签和归档未覆盖。
