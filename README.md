@@ -34,13 +34,13 @@ dependencyResolutionManagement {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-5")
+            implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-6")
         }
     }
 }
 ```
 
-Gradle 根据 KMP 元数据选择平台产物，并传递引入 Stately OpenHarmony `2.1.0-ohos-2.2.21-9`。本 fork 坐标与上游 `io.insert-koin:koin-core` 不同；与官方 Koin Compose 同用时按[接入指南](docs/接入指南.md#与官方-koin-compose-同用)配置依赖替换，避免重复 Native KLIB。
+Gradle 根据 KMP 元数据选择平台产物，并传递引入 Stately OpenHarmony `2.1.0-ohos-2.2.21-10`。本 fork 坐标与上游 `io.insert-koin:koin-core` 不同；与官方 Koin Compose 同用时按[接入指南](docs/接入指南.md#与官方-koin-compose-同用)配置依赖替换，避免重复 Native KLIB。
 
 ## 快速使用
 
