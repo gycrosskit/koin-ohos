@@ -2,15 +2,7 @@
 
 此分支基于上游 `4.1.1`，使用 Kotlin `2.2.21-1.0.0`。独立 `ohos-probe` 构建发布 JVM（Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体，复用上游 JVM/Native 源码。三端共用请使用 `-5`。
 
-```kotlin
-// settings.gradle.kts 的 dependencyResolutionManagement.repositories
-maven { url = uri("https://jitpack.io") }
-
-// 三端共享模块的 commonMain.dependencies
-implementation("com.github.gycrosskit.koin-ohos:koin-core:4.1.1-ohos-2.2.21-5")
-```
-
-`Stately 2.1.0-ohos-2.2.21-9` 是传递依赖，Gradle 根据 `.module` 元数据选择各端变体。iOS KLIB 在 macOS 构建，GitHub Release 保存构建包，由 JitPack 提供 Maven 依赖。构建时使用上游 `io.insert-koin` 生成 KLIB 身份，Maven Publication 使用 JitPack 组名；Stately 同理保留 `co.touchlab` KLIB 身份。与官方 Koin Compose 同用时，还需按 [README](README.md#范围与验证) 替换官方 Core 与 Stately 的 Maven 依赖，避免重复 KLIB。
+消费者的仓库、依赖和官方 Compose 混用配置见 [README](README.md#安装) 与[接入指南](docs/接入指南.md)。Stately `2.1.0-ohos-2.2.21-9` 为传递依赖。发布构建保留上游 `io.insert-koin` / `co.touchlab` KLIB 身份，Maven Publication 则使用 JitPack 组名，避免官方 Native 依赖无法匹配。
 
 ## 构建与验证
 
