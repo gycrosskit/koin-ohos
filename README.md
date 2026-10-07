@@ -14,6 +14,82 @@
 
 当前发布使用 Kotlin `2.2.21-1.0.0` 的 OpenHarmony 工具链。普通 Kotlin `2.2.21` 不提供 `ohosArm64()`；建议消费者使用同一工具链。仓库构建基线为 JDK 17 / Gradle 8.11.1，Android 消费验证使用 AGP 8.10.1。未独立确定最低 iOS / OpenHarmony 系统版本；系统兼容范围由宿主工具链和设备验收决定。
 
+## 架构与调用流程
+
+图示只覆盖本 fork 发布的 `koin-core` 容器与 Native 适配接点，不代表已审阅或发布上游全部模块。适配维护分支仍为 `codex/ohos-4.1.1`。
+
+```mermaid
+flowchart TB
+    Host["宿主<br/>定义与容器生命周期"] --> DSL["commonMain<br/>module / koinApplication"]
+    DSL --> Core["koin-core<br/>Koin / Scope / InstanceRegistry"]
+    Core --> JVM["JVM 平台实现<br/>Android 通过 JVM 消费"]
+    Core --> Native["Native<br/>KoinPlatformTools<br/>iOS / OHOS"]
+    Native --> Stately["Stately fork<br/>锁与安全集合"]
+    Build["build.ohos.gradle.kts"] -. "选择发布目标与依赖" .-> Core
+```
+
+以下以 `single` 定义的首次解析及复用为例；时序图中的 App、Registry、Single 分别对应 `KoinApplication`、`InstanceRegistry`、`SingleInstanceFactory`。定义执行发生在调用线程，容器不会替宿主启动后台任务。
+
+```mermaid
+sequenceDiagram
+    participant H as 宿主
+    participant A as App
+    participant K as Koin
+    participant S as Scope
+    participant R as Registry
+    participant F as Single
+    H->>A: modules(module)
+    A->>K: loadModules(...)
+    K->>R: 注册定义映射
+    H->>K: get()
+    K->>S: get(...)
+    S->>R: resolveInstance(...)
+    R->>F: get(context)
+    F->>F: synchronized
+    Note over F: 首次执行定义，后续复用
+    F-->>R: 实例
+    R-->>S: 实例
+    S-->>K: 实例
+    K-->>H: 实例
+    H->>A: close()
+    A->>K: close()
+    K->>K: 关闭作用域与实例注册表
+```
+
+```mermaid
+classDiagram
+    class KoinApplication {
+        +Koin koin
+        +modules(modules) KoinApplication
+        +close()
+    }
+    class Koin {
+        +get()
+        +loadModules(modules)
+        +close()
+    }
+    class Module
+    class Scope {
+        +get()
+        +close()
+    }
+    class InstanceRegistry
+    class SingleInstanceFactory {
+        +get(context)
+        +drop(scope)
+    }
+    KoinApplication *-- Koin
+    KoinApplication ..> Module : 加载
+    Koin *-- InstanceRegistry
+    Koin --> Scope : 通过 ScopeRegistry 管理
+    Scope --> InstanceRegistry : 解析定义
+    InstanceRegistry o-- SingleInstanceFactory : single 定义
+```
+
+源码：[发布目标与 Stately 依赖](projects/core/koin-core/build.ohos.gradle.kts)、[容器](projects/core/koin-core/src/commonMain/kotlin/org/koin/core/KoinApplication.kt)、[Koin](projects/core/koin-core/src/commonMain/kotlin/org/koin/core/Koin.kt)、[Scope](projects/core/koin-core/src/commonMain/kotlin/org/koin/core/scope/Scope.kt)、[注册表](projects/core/koin-core/src/commonMain/kotlin/org/koin/core/registry/InstanceRegistry.kt)、[single 实例工厂](projects/core/koin-core/src/commonMain/kotlin/org/koin/core/instance/SingleInstanceFactory.kt)、[Module](projects/core/koin-core/src/commonMain/kotlin/org/koin/core/module/Module.kt)。
+
+[Native KoinPlatformTools](projects/core/koin-core/src/nativeMain/kotlin/org/koin/mp/KoinPlatformTools.kt) 使用 Stately 的 `withLock`、`ConcurrentMutableMap` / `ConcurrentMutableSet`；单例创建同步并不使业务实例自动线程安全。宿主负责停止实例使用后关闭独立容器；不由 DI 容器自动取消业务协程。上游来源、未发布模块和设备验证边界见下文。
+
 ## 安装
 
 在项目的 `settings.gradle.kts` 中加入 JitPack：
