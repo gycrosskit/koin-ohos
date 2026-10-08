@@ -1,8 +1,12 @@
 # Koin Core OHOS 适配
 
-此分支基于上游 `4.1.1`，使用 Kotlin `2.2.21-1.0.0`。独立 `ohos-probe` 构建发布 JVM（Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体，复用上游 JVM/Native 源码。三端共用请使用 `-6`。
+**最终核对入口（2026-10-08）**：[测试源码、执行平台、前轮复用与本轮重跑](docs/功能与平台差异.md#验证结果与测试入口)。下列构建/发布命令与已有版本记录保留原范围，不能套用为候选新执行结果。
 
-消费者的仓库、依赖和官方 Compose 混用配置见 [README](README.md#安装) 与[接入指南](docs/接入指南.md)。Stately `2.1.0-ohos-2.2.21-10` 为传递依赖。发布构建保留上游 `io.insert-koin` / `co.touchlab` KLIB 身份，Maven Publication 则使用 JitPack 组名，避免官方 Native 依赖无法匹配。
+2026-10-08 的 Core/CMP/Kuikly 消费映射、候选修复和未验收范围见[功能与平台差异](docs/功能与平台差异.md)；下文已有 tag 的验收保留为历史事实，修复交付版本为 `4.1.1-ohos-2.2.21-7`，发布状态以 Release 为准。
+
+此分支基于上游 `4.1.1`，使用 Kotlin `2.2.21-1.0.0`。独立 `ohos-probe` 构建发布 JVM（Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体，复用上游 JVM/Native 源码。三端共用请使用 `-7`。
+
+消费者的仓库、依赖和官方 Compose 混用配置见 [README](README.md#安装) 与[接入指南](docs/接入指南.md)。Stately `2.1.0-ohos-2.2.21-11` 为传递依赖。发布构建保留上游 `io.insert-koin` / `co.touchlab` KLIB 身份，Maven Publication 则使用 JitPack 组名，避免官方 Native 依赖无法匹配。
 
 ## 构建与验证
 

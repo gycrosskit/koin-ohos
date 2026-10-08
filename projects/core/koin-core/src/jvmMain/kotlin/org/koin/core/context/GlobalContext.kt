@@ -50,6 +50,7 @@ object GlobalContext : KoinContext {
     override fun stopKoin() = synchronized(this) {
         _koin?.close()
         _koin = null
+        _koinApplication = null
     }
 
     override fun startKoin(koinApplication: KoinApplication): KoinApplication = synchronized(this) {

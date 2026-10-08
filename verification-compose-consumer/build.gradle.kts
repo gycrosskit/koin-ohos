@@ -3,8 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.2.21-1.0.0"
 }
 
-val coreVersion = providers.gradleProperty("koinCoreVersion").orElse("4.1.1-ohos-2.2.21-6").get()
-val statelyVersion = providers.gradleProperty("statelyVersion").orElse("2.1.0-ohos-2.2.21-10").get()
+val coreVersion = providers.gradleProperty("koinCoreVersion").orElse("4.1.1-ohos-2.2.21-7").get()
+val statelyVersion = providers.gradleProperty("statelyVersion").orElse("2.1.0-ohos-2.2.21-11").get()
 val forkedCore = "com.github.gycrosskit.koin-ohos:koin-core:$coreVersion"
 
 configurations.configureEach {

@@ -3,7 +3,7 @@ plugins {
     id("com.android.library") version "8.10.1"
 }
 
-val koinCoreVersion = providers.gradleProperty("koinCoreVersion").orElse("4.1.1-ohos-2.2.21-6").get()
+val koinCoreVersion = providers.gradleProperty("koinCoreVersion").orElse("4.1.1-ohos-2.2.21-7").get()
 
 kotlin {
     jvm()
