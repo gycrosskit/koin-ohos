@@ -70,6 +70,7 @@ class Scope(
     internal var parameterStack: ThreadLocal<ArrayDeque<ParametersHolder>>? = null
 
     private var _closed: Boolean = false
+    private var closing: Boolean = false
     val logger: Logger get() = _koin.logger
 
     internal fun create(links: List<Scope>) {
@@ -423,18 +424,19 @@ class Scope(
      * Close all instances from this scope
      */
     fun close() = KoinPlatformTools.synchronized(this) {
-        _koin.logger.debug("|- (-) Scope - id:'$id'")
-
-        _callbacks.forEach { it.onScopeClose(this) }
-        _callbacks.clear()
-        _closed = true
-
-        sourceValue = null
-
-        parameterStack?.get()?.clear()
-        parameterStack = null
-
-        _koin.scopeRegistry.deleteScope(this)
+        if (_closed || closing) return@synchronized
+        // Scope callbacks can resolve existing instances; guard reentrant close without closing resolution early.
+        closing = true
+        try {
+            _koin.logger.debug("|- (-) Scope - id:'$id'")
+            _callbacks.forEach { it.onScopeClose(this) }
+            _callbacks.clear()
+            _closed = true
+            sourceValue = null
+            parameterStack?.get()?.clear()
+            parameterStack = null
+            _koin.scopeRegistry.deleteScope(this)
+        } finally { closing = false }
     }
 
     override fun toString(): String {

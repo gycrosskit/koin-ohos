@@ -4,7 +4,7 @@ import co.touchlab.stately.collections.ConcurrentMutableMap
 import co.touchlab.stately.collections.ConcurrentMutableSet
 import co.touchlab.stately.concurrency.withLock
 import org.koin.core.context.KoinContext
-import org.koin.core.context.globalContextByMemoryModel
+import org.koin.core.context.MutableGlobalContext
 import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.PrintLogger
@@ -13,10 +13,10 @@ import kotlin.reflect.KClass
 actual object KoinPlatformTools {
 
     private val defaultContext: KoinContext by lazy {
-        globalContextByMemoryModel()
+        MutableGlobalContext()
     }
 
-    actual fun getStackTrace(e: Exception): String = e.toString() + Exception().toString().split("\n")
+    actual fun getStackTrace(e: Exception): String = e.stackTraceToString()
     actual fun getClassName(kClass: KClass<*>): String = kClass.qualifiedName ?: getKClassDefaultName(kClass)
     actual fun getClassFullNameOrNull(kClass: KClass<*>): String? = kClass.qualifiedName
     actual fun defaultLazyMode(): LazyThreadSafetyMode = LazyThreadSafetyMode.PUBLICATION

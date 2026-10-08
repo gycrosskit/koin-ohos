@@ -23,8 +23,6 @@ import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-internal fun globalContextByMemoryModel(): KoinContext = MutableGlobalContext()
-
 /**
  * Mutable global context for the new memory model. Very similar to how the JVM global context works.
  */
@@ -50,6 +48,7 @@ internal class MutableGlobalContext : KoinContext {
     override fun stopKoin() = lock.withLock {
         _koin?.close()
         _koin = null
+        _koinApplication = null
     }
 
     override fun startKoin(koinApplication: KoinApplication): KoinApplication = lock.withLock {
