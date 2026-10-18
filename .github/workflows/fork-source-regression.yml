@@ -44,7 +44,7 @@ jobs:
         printf 'source_sha=%s\nevent=%s\nevent_sha=%s\nrunner=%s\n' "$actual_sha" "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$(uname -m)" | tee ci-diagnostics/identity.txt
         test "$actual_sha" = "$SOURCE_SHA"
         printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
-        echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
+        echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security -Dsun.net.client.defaultConnectTimeout=30000 -Dsun.net.client.defaultReadTimeout=60000" >> "$GITHUB_ENV"
         bash .ci-shared/templates/ci-pin-fork-host.sh
         cat > "$RUNNER_TEMP/ci-repositories.gradle" <<'GRADLE'
         gradle.settingsEvaluated { settings ->
@@ -57,10 +57,10 @@ jobs:
         GRADLE
     - name: Run Maven metadata contracts
       run: |
-        python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/metadata.log -- python3 scripts/test-jitpack-metadata.py
+        python3 .ci-shared/templates/ci-run.py --no-progress-seconds 300 --log ci-diagnostics/metadata.log -- python3 scripts/test-jitpack-metadata.py
     - name: Core JVM tests
       run: |
-        python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/core-jvm-tests.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:jvmTest --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000
+        python3 .ci-shared/templates/ci-run.py --no-progress-seconds 300 --log ci-diagnostics/core-jvm-tests.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:jvmTest --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000
     - name: Require real test execution
       run: |
         python3 - projects/core/koin-core/build/test-results/jvmTest <<'TEST_RESULTS'
@@ -111,7 +111,7 @@ jobs:
         printf 'source_sha=%s\nevent=%s\nevent_sha=%s\nrunner=%s\n' "$actual_sha" "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$(uname -m)" | tee ci-diagnostics/identity.txt
         test "$actual_sha" = "$SOURCE_SHA"
         printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
-        echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
+        echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security -Dsun.net.client.defaultConnectTimeout=30000 -Dsun.net.client.defaultReadTimeout=60000" >> "$GITHUB_ENV"
         bash .ci-shared/templates/ci-pin-fork-host.sh
         cat > "$RUNNER_TEMP/ci-repositories.gradle" <<'GRADLE'
         gradle.settingsEvaluated { settings ->
@@ -133,7 +133,7 @@ jobs:
         xcrun --sdk iphonesimulator --show-sdk-path
     - name: Core iOS and OHOS source
       run: |
-        python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/core-ios-and-ohos-source.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:${NATIVE_TEST} :koin-core:compileKotlinIosArm64 :koin-core:compileKotlin${NATIVE_TARGET} :koin-core:compileKotlinOhosArm64 --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000
+        python3 .ci-shared/templates/ci-run.py --no-progress-seconds 300 --log ci-diagnostics/core-ios-and-ohos-source.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:${NATIVE_TEST} :koin-core:compileKotlinIosArm64 :koin-core:compileKotlin${NATIVE_TARGET} :koin-core:compileKotlinOhosArm64 --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000
     - name: Require real test execution
       run: |
         python3 - projects/core/koin-core/build/test-results/${NATIVE_TEST} <<'TEST_RESULTS'
