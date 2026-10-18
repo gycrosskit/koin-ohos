@@ -3,6 +3,8 @@ title: Releases & API Upgrade Guides
 custom_edit_url: null
 ---
 
+> 以下为上游版本历史，不代表本 fork 当前支持或发布范围；当前源码已删除 Compose 模块与示例。当前宿主沿用已验收版本 `4.1.1-ohos-2.2.21-8-rc.1`，发布状态、归档及验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1) 为准；当前边界见 [README](../../README.md) 与[功能与平台差异](../功能与平台差异.md)，以下历史正文保留原样。 本轮只合并源码清理，不发布新制品；该旧 RC 归档不包含本次 CMP 物理删除。
+
 :::info
 This page provides a comprehensive overview of every Koin main release, detailing the evolution of our framework to help you plan for upgrades and maintain compatibility.
 :::

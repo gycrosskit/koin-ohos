@@ -1,4 +1,4 @@
-> `gycrosskit` 的鸿蒙适配与依赖接入见 [OHOS_PORT.md](OHOS_PORT.md)；以下是上游 Koin 文档。
+> Use the validated [4.1.1-ohos-2.2.21-8-rc.1 Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1). This fork publishes Core only; the removed Compose modules and samples were already excluded from its Maven artifacts. This source cleanup does not publish new binaries or change existing tags and archives. See [OHOS_PORT.md](OHOS_PORT.md) for OpenHarmony integration and verification boundaries. The upstream references below preserve provenance and non-Compose documentation.
 
 ![logo](./docs/img/koin_main_logo.png)
 
@@ -64,7 +64,6 @@ You can find here tutorials to help you learn and get started with the Koin fram
 - [Kotlin with Koin Annotations](https://insert-koin.io/docs/quickstart/kotlin-annotations)
 - [Android](https://insert-koin.io/docs/quickstart/android-viewmodel)
 - [Android with Koin Annotations](https://insert-koin.io/docs/quickstart/android-annotations)
-- [Android Jetpack Compose](https://insert-koin.io/docs/quickstart/android-compose)
 - [Kotlin Multiplatform](https://insert-koin.io/docs/quickstart/kmp)
 - [Ktor](https://insert-koin.io/docs/quickstart/ktor)
 

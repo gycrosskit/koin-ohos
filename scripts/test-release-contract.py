@@ -10,6 +10,33 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ReleaseContractTest(unittest.TestCase):
+    def test_retired_compose_has_no_modules_or_build_references(self):
+        for path in ["projects/compose", "examples/sample-android-compose", "examples/sample-desktop-compose"]:
+            self.assertFalse((ROOT / path).exists(), path)
+        for directory in ["projects", "examples", "ohos-probe", "verification-consumer"]:
+            for path in (ROOT / directory).rglob("*"):
+                if not path.is_file() or {"build", ".gradle"}.intersection(path.parts):
+                    continue
+                if not (path.name.endswith((".gradle", ".gradle.kts")) or path.name == "libs.versions.toml"):
+                    continue
+                content = path.read_text()
+                self.assertNotRegex(content, r"koin-(?:androidx-)?compose|:compose:|sample-(?:android|desktop)-compose", str(path))
+                self.assertNotRegex(content, r"(?:org\.jetbrains|androidx)\.compose\.(?:ui|foundation|material3?|animation)(?:[\.:\"])", str(path))
+        # Check the configured project graph; dormant upstream samples are outside this build.
+        for directory in ["projects", "examples"]:
+            base = ROOT / directory
+            settings = next(base.glob("settings.gradle*"))
+            content = re.sub(r"//[^\n]*", "", settings.read_text())
+            included = set(re.findall(r'["\'](:[a-zA-Z0-9_:-]+)["\']', content) if directory == "projects"
+                           else re.findall(r'^include ["\']([^"\']+)["\']', content, re.M))
+            included = {project.lstrip(":") for project in included}
+            for project in included:
+                project_directory = base / project.replace(":", "/")
+                self.assertTrue(project_directory.is_dir(), project)
+                for build in project_directory.glob("build.gradle*"):
+                    for target in re.findall(r'project\(["\'](:[^"\']+)["\']\)', build.read_text()):
+                        self.assertIn(target.lstrip(":"), included, str(build))
+
     def test_source_and_public_downloads_have_bounded_waits(self):
         workflows = [(ROOT / ".github/workflows" / name).read_text() for name in
                      ["fork-source-regression.yml", "release-validation.yml"]]

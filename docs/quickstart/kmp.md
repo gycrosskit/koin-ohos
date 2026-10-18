@@ -111,68 +111,51 @@ expect fun getPlatform(): Platform
 Both get local platform implementation
 
 
-## Injecting in Android
+## Starting the shared Core
 
-> All the Android app is located in `androidApp` Gradle project
-
-The `UserPresenter` component will be created, resolving the `UserRepository` instance with it. To get it into our Activity, let's inject it with the `koinInject` compose function: 
+The shared configuration uses only Koin Core:
 
 ```kotlin
-// in App()
+// KoinApp.kt (commonMain)
+import org.koin.core.context.startKoin
 
-val greeting = koinInject<UserPresenter>().sayHello("Koin")
-
-Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-    Image(painterResource(Res.drawable.compose_multiplatform), null)
-    Text("Compose: $greeting")
-}
-```
-
-That's it, your app is ready.
-
-:::info
-The `koinInject()` function allows us to retrieve Koin instances, in Android Compose runtime
-:::
-
-We need to start Koin with our Android application. Just call the `KoinApplication()` function in the compose application function `App`:
-
-```kotlin
-fun App() {
-    
-    KoinApplication(application = koinAndroidConfiguration(LocalContext.current)){
-        // ...
+fun initKoin() {
+    startKoin {
+        modules(appModule)
     }
 }
 ```
 
-We gather Koin android configuration, from the shared KMP configuration:
+## Injecting in Android
+
+> All the Android app is located in `androidApp` Gradle project.
+
+Start the shared Core once in the Android application:
 
 ```kotlin
-// Android config
-fun koinAndroidConfiguration(context: Context) : KoinAppDeclaration = {
-    androidContext(context)
-    androidLogger()
-    koinSharedConfiguration()
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        initKoin()
+    }
 }
 ```
 
-:::note
-We get the current Android context from Compose with `LocalContext.current`
-:::
-
-And the shared KMP config:
+Register `MainApplication` in the manifest. The Activity retrieves its presenter from Core and renders it with a native Android view:
 
 ```kotlin
-// Common config
-fun koinSharedConfiguration() : KoinAppDeclaration = {
-    modules(appModule)
+import org.koin.mp.KoinPlatform
+
+class MainActivity : Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val presenter = KoinPlatform.getKoin().get<UserPresenter>()
+        setContentView(TextView(this).apply {
+            text = presenter.sayHello("Koin")
+        })
+    }
 }
 ```
-
-:::info
-The `modules()` function load the given list of modules
-:::
-
 
 ## Injecting in iOS
 

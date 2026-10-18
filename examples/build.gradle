@@ -15,16 +15,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // Android
         classpath "com.android.tools.build:gradle:$android_gradle_version"
-        // Compose
-        classpath "org.jetbrains.compose:compose-gradle-plugin:$jb_compose_version"
         // Benchmark
         classpath "me.champeau.gradle:jmh-gradle-plugin:0.5.3"
     }
-}
-
-plugins {
-    // Apply the new Kotlin Compose plugin
-    id 'org.jetbrains.kotlin.plugin.compose' version "$kotlin_version" apply false
 }
 
 wrapper {

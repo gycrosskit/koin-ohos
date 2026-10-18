@@ -29,12 +29,6 @@ dependencies {
         api(project(":android:koin-androidx-workmanager"))
         api(project(":android:koin-androidx-startup"))
         api(project(":android:koin-dagger-bridge"))
-
-        api(project(":compose:koin-compose"))
-        api(project(":compose:koin-compose-viewmodel"))
-        api(project(":compose:koin-compose-viewmodel-navigation"))
-        api(project(":compose:koin-androidx-compose"))
-        api(project(":compose:koin-androidx-compose-navigation"))
     }
 }
 

@@ -4,6 +4,8 @@ title: Koin
 
 All you need to setting up Koin in your project
 
+> 本页保留上游安装说明。GY CrossKit 当前宿主沿用已验收版本 `4.1.1-ohos-2.2.21-8-rc.1`，仅发布 Core；实际 fork 坐标见 [README](../../README.md#安装)，发布状态、归档及验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1) 为准。 本轮只合并源码清理，不发布新制品；该旧 RC 归档不包含本次 CMP 物理删除。
+
 ## Current Versions
 
 You can find all Koin packages on [Maven Central](https://central.sonatype.com/search?q=io.insert-koin+koin-core&sort=name).
@@ -118,27 +120,6 @@ dependencies {
 :::info
 From now you can continue on Koin Tutorials to learn about using Koin: [Android App Tutorial](/docs/quickstart/android-viewmodel)
 :::
-
-### **Jetpack Compose or Compose Multiplatform**
-
-Add `koin-compose` dependency to your multiplatform application, for use Koin & Compose API:
-
-```groovy
-dependencies {
-    implementation("io.insert-koin:koin-compose:$koin_version")
-    implementation("io.insert-koin:koin-compose-viewmodel:$koin_version")
-    implementation("io.insert-koin:koin-compose-viewmodel-navigation:$koin_version")
-}
-```
-
-If you are using pure Android Jetpack Compose, you can go with
-
-```groovy
-dependencies {
-    implementation("io.insert-koin:koin-androidx-compose:$koin_version")
-    implementation("io.insert-koin:koin-androidx-compose-navigation:$koin_version")
-}
-```
 
 ### **Kotlin Multiplatform**
 

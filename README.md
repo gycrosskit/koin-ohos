@@ -1,12 +1,12 @@
 # GY CrossKit Koin OpenHarmony
 
-2026-10-18 Maven `4.1.1-ohos-2.2.21-8-rc.1` 准备中：修复失败清理后的 Scope.close 重试及父级定义解析；只发布 koin-core，原生宿主/Kuikly 共用 Core，不恢复独立 CMP 产品。Stately 继续 `2.1.0-ohos-2.2.21-11`。归档、完整源码 CI 与精确公开消费待该 RC 证据，下面 `-7` 的验收说明保持历史范围。
+当前宿主继续使用已验收的 `4.1.1-ohos-2.2.21-8-rc.1`，Stately 为 `2.1.0-ohos-2.2.21-11`；归档与该版本验收见精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1)。当前源码进一步移除上游 Compose/CMP 模块、UI 示例及专属接线；这些模块和示例原本不在已发布 Maven 制品中。本轮只合并源码清理，不发布新制品，也不改动此前 RC 的不可变 tag 和归档。
 
-本库提供基础设施 Core，原生宿主与 Kuikly 使用相同平台实现；没有独立 UI 模块。三端消费入口、公开功能组、平台限制及 **4.1.1-ohos-2.2.21-7**的验证范围见 [功能与平台差异](docs/功能与平台差异.md)。发布状态以对应 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-7) 为准；设备验收边界见功能页。
+本库提供基础设施 Core，原生宿主与 Kuikly 使用相同平台实现；没有独立 UI 模块。三端消费入口、公开功能组、平台限制及各轮验证范围见 [功能与平台差异](docs/功能与平台差异.md)。`4.1.1-ohos-2.2.21-8-rc.1` 的完整源码 [CI](https://github.com/gycrosskit/koin-ohos/actions/runs/39127567294) 和精确公开消费 [CI](https://github.com/gycrosskit/koin-ohos/actions/runs/39128567541)，以及 `-7` 的验收仅证明其各自历史版本，不证明本次源码清理已完成新制品验收；设备验收边界见功能页。
 
 为 Android、iOS 和 OpenHarmony 的 Kotlin Multiplatform 共享代码提供依赖注入。基于 [Koin 4.1.1](https://github.com/InsertKoinIO/koin)，保留 `org.koin` API，增加 `ohosArm64` 发布变体。
 
-此 fork 只发布 `koin-core`。官方 Koin 的 Android 扩展、Compose、ViewModel 及其他模块不在本 fork 的发布范围内。
+此 fork 只发布 `koin-core`。官方 Koin 的 Android 扩展、ViewModel 及其他模块不在本 fork 的发布范围内。当前源码已删除上游 Compose 模块、示例及专属构建和教程；保留 Core、原生模块、许可证与版本历史。该删除不改变历史版本的不可变 tag、归档和校验值。
 
 ## 平台与工具链
 
@@ -146,7 +146,7 @@ application.close()
 
 ## 文档与支持
 
-候选打包：`VERSION=4.1.1-ohos-2.2.21-8-rc.1 bash scripts/package-maven.sh`，在受控 macOS 环境输出 `build/release/<版本>/` 的归档、`SHA256SUMS`、`source-receipt.json`。归档须通过 6 个精确 publications、四种 Native target 与 JVM JAR 检查；不覆盖旧 checksum。候选 tag/Release 已存在后，手动运行 [Fork release validation](.github/workflows/release-validation.yml)，验证公开文件并从 JitPack 实际消费 Android、iOS Framework、OHOS 动态库及 JVM 注入；不使用 mavenLocal 或源码替换。
+本轮只合并源码清理，宿主依赖和已发布制品保持上述版本。后续独立发布须使用新的不可变版本，按 [构建与验证](OHOS_PORT.md) 冻结归档、记录真实 SHA-256，并通过 [Fork release validation](.github/workflows/release-validation.yml) 验证公开文件及 Android、iOS Framework、OHOS 动态库和 JVM 注入；不覆盖旧版本，不使用 mavenLocal 或源码替换作为远程消费证明。
 
 - [接入指南](docs/接入指南.md)：依赖身份、历史兼容验证和容器生命周期。
 - [构建与验证](OHOS_PORT.md)：发布流程、独立消费工程和验收范围。
