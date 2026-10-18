@@ -1,4 +1,4 @@
-> 当前维护 RC 为 `4.1.1-ohos-2.2.21-8-rc.2`，发布状态、归档及验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.2) 为准。`gycrosskit` 的鸿蒙适配与依赖接入见 [OHOS_PORT.md](OHOS_PORT.md)；以下保留上游 Koin 的来源与非 Compose 文档入口。本 fork 当前源码已移除 Compose 扩展和示例，仅发布 Core。
+> Use the validated [4.1.1-ohos-2.2.21-8-rc.1 Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1). This fork publishes Core only; the removed Compose modules and samples were already excluded from its Maven artifacts. This source cleanup does not publish new binaries or change existing tags and archives. See [OHOS_PORT.md](OHOS_PORT.md) for OpenHarmony integration and verification boundaries. The upstream references below preserve provenance and non-Compose documentation.
 
 ![logo](./docs/img/koin_main_logo.png)
 

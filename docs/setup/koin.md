@@ -4,7 +4,7 @@ title: Koin
 
 All you need to setting up Koin in your project
 
-> 本页保留上游安装说明。GY CrossKit 当前维护 RC 为 `4.1.1-ohos-2.2.21-8-rc.2`，仅发布 Core；实际 fork 坐标见 [README](../../README.md#安装)，发布状态、归档及验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.2) 为准。
+> 本页保留上游安装说明。GY CrossKit 当前宿主沿用已验收版本 `4.1.1-ohos-2.2.21-8-rc.1`，仅发布 Core；实际 fork 坐标见 [README](../../README.md#安装)，发布状态、归档及验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1) 为准。 本轮只合并源码清理，不发布新制品；该旧 RC 归档不包含本次 CMP 物理删除。
 
 ## Current Versions
 

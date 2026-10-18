@@ -2,7 +2,7 @@ name: Package release candidate
 'on':
   push:
     branches: ['codex/kuikly-rc-*']
-    paths: ['.github/workflows/package-release.yml', 'scripts/package-maven.sh', 'scripts/archive-prebuilt.sh', 'build.gradle.kts', 'gradle.properties', 'ohos-probe/build.gradle.kts']
+    paths: ['scripts/package-maven.sh', 'scripts/archive-prebuilt.sh', 'build.gradle.kts', 'gradle.properties', 'ohos-probe/build.gradle.kts']
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 90
     env:
-      VERSION: '4.1.1-ohos-2.2.21-8-rc.2'
+      VERSION: '4.1.1-ohos-2.2.21-8-rc.1'
       GROUP: 'com.github.gycrosskit.koin-ohos'
       CI_FORK_HOST_FALLBACK_IP: ${{ vars.CI_FORK_HOST_FALLBACK_IP }}
     steps:
@@ -38,10 +38,10 @@ jobs:
       - name: Configure remote build dependencies
         run: |
           printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
-          echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security -Dsun.net.client.defaultConnectTimeout=30000 -Dsun.net.client.defaultReadTimeout=60000" >> "$GITHUB_ENV"
+          echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
           bash .ci-shared/templates/ci-pin-fork-host.sh
       - name: Build and verify exact Maven archive
-        run: python3 .ci-shared/templates/ci-run.py --no-progress-seconds 300 --log ci-diagnostics/package.log -- bash scripts/package-maven.sh
+        run: python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/package.log -- bash scripts/package-maven.sh
       - name: Freeze archive receipt
         env:
           ARCHIVE: build/release/$VERSION/koin-ohos-maven.tar.gz

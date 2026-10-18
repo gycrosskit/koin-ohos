@@ -1,8 +1,8 @@
 # Koin Core OHOS 适配
 
-当前维护 RC 为 `4.1.1-ohos-2.2.21-8-rc.2`，发布状态、冻结归档及该版本验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.2) 为准。[测试源码、执行平台与各轮验证](docs/功能与平台差异.md#验证结果与测试入口)区分本地删除验证、历史 CI 与消费结果。
+当前宿主沿用已验收版本 `4.1.1-ohos-2.2.21-8-rc.1`，发布状态、冻结归档及该版本验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.1) 为准。[测试源码、执行平台与各轮验证](docs/功能与平台差异.md#验证结果与测试入口)区分本地删除验证、历史 CI 与消费结果。
 
-当前源码已移除上游 Compose 模块、示例及专属接线，Core 公共 API 与 KLIB 身份保持不变。下文 `4.1.1-ohos-2.2.21-7` 及更早 tag 的验收保留为历史事实，不代表当前 RC 的验收。
+本轮只合并源码清理，不发布新制品。当前源码已移除上游 Compose 模块、示例及专属接线，Core 公共 API 与 KLIB 身份保持不变；既有 RC 归档不包含这次物理删除。下文 `4.1.1-ohos-2.2.21-7` 及更早 tag 的验收保留为历史事实，不代表本次源码清理的验收。
 
 此分支基于上游 `4.1.1`，使用 Kotlin `2.2.21-1.0.0`。独立 `ohos-probe` 构建发布 JVM（Android 使用）、`iosArm64`、`iosSimulatorArm64`、`iosX64` 和 `ohosArm64` 变体，复用上游 JVM/Native 源码。三端共用版本与坐标见 [README](README.md#安装)。
 
@@ -11,12 +11,12 @@
 ## 构建与验证
 
 ```bash
-# 在干净的受控 macOS checkout 构建并冻结 6 个 publication；拒绝覆盖同版本输出。
-VERSION=4.1.1-ohos-2.2.21-8-rc.2 bash scripts/package-maven.sh
+# 后续独立发布：先将 NEW_RC_VERSION 设置为新的不可变 RC，不重建或覆盖旧版本。
+VERSION="$NEW_RC_VERSION" bash scripts/package-maven.sh
 
 # 独立消费者仅通过 Maven 坐标解析，不引用本仓库源码。
 # 需要 Android SDK（ANDROID_HOME）、Xcode 及 OHOS Native 工具链。
-VERSION=4.1.1-ohos-2.2.21-8-rc.2
+VERSION=4.1.1-ohos-2.2.21-8-rc.1
 bash projects/gradlew -p verification-consumer -PremoteOnly "-PkoinCoreVersion=$VERSION" \
   compileDebugKotlinAndroid compileKotlinIosArm64 compileKotlinIosSimulatorArm64 \
   compileKotlinIosX64 linkDebugFrameworkIosSimulatorArm64 linkDebugSharedOhosArm64 verifyKoin
