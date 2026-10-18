@@ -58,6 +58,8 @@ jobs:
     - name: Run Maven metadata contracts
       run: |
         python3 .ci-shared/templates/ci-run.py --no-progress-seconds 300 --log ci-diagnostics/metadata.log -- python3 scripts/test-jitpack-metadata.py
+    - name: Check release routing and retired Compose build contracts
+      run: python3 scripts/test-release-contract.py
     - name: Core JVM tests
       run: |
         python3 .ci-shared/templates/ci-run.py --no-progress-seconds 300 --log ci-diagnostics/core-jvm-tests.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:jvmTest --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000

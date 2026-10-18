@@ -1,9 +1,0 @@
-public final class org/koin/androidx/compose/KoinAndroidContextKt {
-	public static final fun KoinAndroidContext (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
-}
-
-public final class org/koin/androidx/compose/scope/KoinAndroidScopeKt {
-	public static final fun KoinActivityScope (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
-	public static final fun KoinFragmentScope (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
-}
-

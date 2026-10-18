@@ -1,10 +1,16 @@
 # GY CrossKit fork 更新日志
 
-## 4.1.1-ohos-2.2.21-8-rc.1（准备中，2026-10-18）
+## 4.1.1-ohos-2.2.21-8-rc.2
+
+- 当前维护 RC；发布状态、冻结归档及该版本验收以精确 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-8-rc.2) 为准。
+- 删除上游 Compose/CMP 模块、UI 示例、专属构建与教程；保留 Core、原生模块、许可证和历史记录，不改变此前版本的不可变 tag、归档或校验值。
+- Core 公共 API 与已发布 KLIB 身份保持不变，Stately 仍为 `2.1.0-ohos-2.2.21-11`。删除后的本地定向验证为 JVM 269 项、iOS Simulator 265 项通过，各跳过 1 项既有 `@Ignore`；这不是新 RC 的远程 CI 或消费验收。
+
+## 4.1.1-ohos-2.2.21-8-rc.1（已发布，2026-10-18）
 
 - Scope 的 onClose 失败后保留可重试清理状态；CoreResolver 修复扩展解析优先级与单父级链查找，保留父级优先、root fallback 与空结果合同。
 - 保留原有解析/注入回归，维护 JVM、iOS 和 OHOS Core；不发布 Compose/Kuikly ViewModel 扩展。
-- Maven 候选只更新 Koin Core，Stately 保持 2.1.0-ohos-2.2.21-11；归档、完整 CI 与精确公开消费待本 RC 证据，设备运行仍未验收。
+- Maven 发布只更新 Koin Core，Stately 保持 2.1.0-ohos-2.2.21-11；此前完整源码 [CI](https://github.com/gycrosskit/koin-ohos/actions/runs/39127567294) 与精确公开消费 [CI](https://github.com/gycrosskit/koin-ohos/actions/runs/39128567541) 已通过，设备运行仍未验收。
 
 # Latests Changes
 

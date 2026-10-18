@@ -24,7 +24,6 @@ import org.koin.core.module.dsl.new
 import org.koin.core.module.dsl.onOptions
 import org.koin.dsl.ScopeDSL
 
-//TODO DEPRECATE in favor of koin-viewmodel to mutualise ViewModel DSL for Android and Compose
 
 /**
  * Declare a [ScopeDSL.viewModel] definition by resolving a constructor reference for the dependency.
