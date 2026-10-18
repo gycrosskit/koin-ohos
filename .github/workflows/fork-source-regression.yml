@@ -157,3 +157,4 @@ jobs:
       uses: gycrosskit/.github/actions/ci-diagnostics@607ff44db144c68fc6523de38c04aac29e427b68
       with:
         status: ${{ job.status }}
+        extra-paths: projects/core/koin-core/build/test-results/*/binary/**
