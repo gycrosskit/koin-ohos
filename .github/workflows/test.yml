@@ -10,6 +10,7 @@ concurrency:
 jobs:
 
   run-tests:
+    if: github.repository == 'InsertKoinIO/koin'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 

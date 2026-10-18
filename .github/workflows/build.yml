@@ -10,6 +10,7 @@ concurrency:
 jobs:
 
   build-test:
+    if: github.repository == 'InsertKoinIO/koin'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -24,6 +25,7 @@ jobs:
         run: cd projects && ./test.sh
 
   build-publish-local:
+    if: github.repository == 'InsertKoinIO/koin'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -38,6 +40,7 @@ jobs:
         run: cd projects && ./install.sh
 
   build-macos:
+    if: github.repository == 'InsertKoinIO/koin'
     runs-on: macos-latest
     timeout-minutes: 30
 
