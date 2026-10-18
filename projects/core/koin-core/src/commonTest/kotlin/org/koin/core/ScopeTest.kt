@@ -1,5 +1,6 @@
 package org.koin.core
 
+import org.koin.KoinCoreTest
 import org.koin.Simple
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.getOrCreateScope
@@ -16,7 +17,7 @@ import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.*
 
-class ScopeTest {
+class ScopeTest : KoinCoreTest() {
 
     private class A
     private class B

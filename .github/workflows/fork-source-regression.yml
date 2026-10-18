@@ -1,0 +1,160 @@
+# Only the maintained fork source is checked; upstream publishing workflows stay separate.
+name: Fork source regression
+'on':
+  pull_request:
+    branches:
+    - codex/ohos-4.1.1
+  workflow_dispatch: null
+permissions:
+  contents: read
+env:
+  SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  CI_FORK_HOST_FALLBACK_IP: ${{ vars.CI_FORK_HOST_FALLBACK_IP }}
+concurrency:
+  group: fork-source-${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  jvm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+    - name: Checkout exact source candidate
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        ref: ${{ env.SOURCE_SHA }}
+        persist-credentials: false
+    - name: Load pinned shared CI helpers
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        repository: gycrosskit/.github
+        ref: 607ff44db144c68fc6523de38c04aac29e427b68
+        path: .ci-shared
+        persist-credentials: false
+    - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00
+      with:
+        distribution: temurin
+        java-version: '17'
+    - name: Record source identity and configure dependency resolution
+      run: |
+        mkdir -p ci-diagnostics
+        actual_sha="$(git rev-parse HEAD)"
+        printf 'source_sha=%s\nevent=%s\nevent_sha=%s\nrunner=%s\n' "$actual_sha" "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$(uname -m)" | tee ci-diagnostics/identity.txt
+        test "$actual_sha" = "$SOURCE_SHA"
+        printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
+        echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
+        bash .ci-shared/templates/ci-pin-fork-host.sh
+        cat > "$RUNNER_TEMP/ci-repositories.gradle" <<'GRADLE'
+        gradle.settingsEvaluated { settings ->
+            [settings.pluginManagement.repositories, settings.dependencyResolutionManagement.repositories].each { repositories ->
+                repositories.withType(org.gradle.api.artifacts.repositories.MavenArtifactRepository).matching { it.url.host == 'maven.eazytec-cloud.com' }.all {
+                    content { includeVersionByRegex('.*', '.*', '.*-1\\.0\\.0') }
+                }
+            }
+        }
+        GRADLE
+    - name: Run Maven metadata contracts
+      run: |
+        python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/metadata.log -- python3 scripts/test-jitpack-metadata.py
+    - name: Core JVM tests
+      run: |
+        python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/core-jvm-tests.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:jvmTest --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000
+    - name: Require real test execution
+      run: |
+        python3 - projects/core/koin-core/build/test-results/jvmTest <<'TEST_RESULTS'
+        import sys, xml.etree.ElementTree as ET
+        from pathlib import Path
+        cases = []
+        for directory in sys.argv[1:]:
+            reports = list(Path(directory).glob('TEST-*.xml'))
+            assert reports, f'Missing test XML: {directory}'
+            current = [case for report in reports for case in ET.parse(report).getroot().iter('testcase')]
+            assert any(case.find('skipped') is None for case in current), f'No test executed: {directory}'
+            cases.extend(current)
+        assert all(case.find('failure') is None and case.find('error') is None for case in cases), 'Test failure/error'
+        executed = [case for case in cases if case.find('skipped') is None]
+        for required in ['ReviewCoreContractTest', 'PlatformContextLifecycleTest']:
+            assert any(case.get('classname', '').endswith(required) for case in executed), f'Required regression did not run: {required}'
+        print(f'Actual cases: {len(executed)} executed, {len(cases)-len(executed)} skipped')
+        TEST_RESULTS
+    - name: Save source CI logs and test XML
+      if: always()
+      uses: gycrosskit/.github/actions/ci-diagnostics@607ff44db144c68fc6523de38c04aac29e427b68
+      with:
+        status: ${{ job.status }}
+  native:
+    runs-on: macos-15
+    timeout-minutes: 90
+    steps:
+    - name: Checkout exact source candidate
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        ref: ${{ env.SOURCE_SHA }}
+        persist-credentials: false
+    - name: Load pinned shared CI helpers
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        repository: gycrosskit/.github
+        ref: 607ff44db144c68fc6523de38c04aac29e427b68
+        path: .ci-shared
+        persist-credentials: false
+    - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00
+      with:
+        distribution: temurin
+        java-version: '17'
+    - name: Record source identity and configure dependency resolution
+      run: |
+        mkdir -p ci-diagnostics
+        actual_sha="$(git rev-parse HEAD)"
+        printf 'source_sha=%s\nevent=%s\nevent_sha=%s\nrunner=%s\n' "$actual_sha" "$GITHUB_EVENT_NAME" "$GITHUB_SHA" "$(uname -m)" | tee ci-diagnostics/identity.txt
+        test "$actual_sha" = "$SOURCE_SHA"
+        printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
+        echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
+        bash .ci-shared/templates/ci-pin-fork-host.sh
+        cat > "$RUNNER_TEMP/ci-repositories.gradle" <<'GRADLE'
+        gradle.settingsEvaluated { settings ->
+            [settings.pluginManagement.repositories, settings.dependencyResolutionManagement.repositories].each { repositories ->
+                repositories.withType(org.gradle.api.artifacts.repositories.MavenArtifactRepository).matching { it.url.host == 'maven.eazytec-cloud.com' }.all {
+                    content { includeVersionByRegex('.*', '.*', '.*-1\\.0\\.0') }
+                }
+            }
+        }
+        GRADLE
+    - name: Select the actual simulator architecture
+      run: |
+        case "$(uname -m)" in
+          arm64) echo 'NATIVE_TEST=iosSimulatorArm64Test' >> "$GITHUB_ENV"; echo 'NATIVE_TARGET=IosSimulatorArm64' >> "$GITHUB_ENV" ;;
+          x86_64) echo 'NATIVE_TEST=iosX64Test' >> "$GITHUB_ENV"; echo 'NATIVE_TARGET=IosX64' >> "$GITHUB_ENV" ;;
+          *) echo 'Unsupported macOS architecture' >&2; exit 1 ;;
+        esac
+        xcodebuild -version
+        xcrun --sdk iphonesimulator --show-sdk-path
+    - name: Core iOS and OHOS source
+      run: |
+        python3 .ci-shared/templates/ci-run.py --log ci-diagnostics/core-ios-and-ohos-source.log -- bash projects/gradlew -p ohos-probe --init-script "$RUNNER_TEMP/ci-repositories.gradle" :koin-core:${NATIVE_TEST} :koin-core:compileKotlinIosArm64 :koin-core:compileKotlin${NATIVE_TARGET} :koin-core:compileKotlinOhosArm64 --no-daemon --max-workers=1 --no-parallel --no-build-cache --rerun-tasks --continue --stacktrace -Dorg.gradle.internal.http.connectionTimeout=15000 -Dorg.gradle.internal.http.socketTimeout=30000
+    - name: Require real test execution
+      run: |
+        python3 - projects/core/koin-core/build/test-results/${NATIVE_TEST} <<'TEST_RESULTS'
+        import sys, xml.etree.ElementTree as ET
+        from pathlib import Path
+        cases = []
+        for directory in sys.argv[1:]:
+            reports = list(Path(directory).glob('TEST-*.xml'))
+            assert reports, f'Missing test XML: {directory}'
+            current = [case for report in reports for case in ET.parse(report).getroot().iter('testcase')]
+            assert any(case.find('skipped') is None for case in current), f'No test executed: {directory}'
+            cases.extend(current)
+        assert all(case.find('failure') is None and case.find('error') is None for case in cases), 'Test failure/error'
+        executed = [case for case in cases if case.find('skipped') is None]
+        for required in ['ReviewCoreContractTest', 'PlatformStackTraceTest']:
+            assert any(case.get('classname', '').endswith(required) for case in executed), f'Required regression did not run: {required}'
+        print(f'Actual cases: {len(executed)} executed, {len(cases)-len(executed)} skipped')
+        TEST_RESULTS
+    - name: Save source CI logs and test XML
+      if: always()
+      uses: gycrosskit/.github/actions/ci-diagnostics@607ff44db144c68fc6523de38c04aac29e427b68
+      with:
+        status: ${{ job.status }}
+        extra-paths: projects/core/koin-core/build/test-results/*/binary/**

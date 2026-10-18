@@ -3,7 +3,7 @@ plugins {
 }
 
 subprojects {
-    // Native KLIB names must match the upstream Core required by official Koin Compose.
+    // Keep the published upstream Native KLIB identity; the Maven group below is fork-specific.
     group = "io.insert-koin"
     version = providers.environmentVariable("VERSION").orElse("4.1.1-ohos-2.2.21-7").get()
     plugins.apply("maven-publish")
