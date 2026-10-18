@@ -8,6 +8,42 @@ import org.koin.core.scope.ScopeCallback
 import kotlin.test.*
 
 class ReviewCoreContractTest {
+    @Test fun throwingDefinitionOnCloseCanRetryWithoutLosingTheScopeSource() {
+        var attempts = 0
+        var callbacks = 0
+        lateinit var closingScope: Scope
+        val source = Any()
+        val app = koinApplication { modules(module {
+            scope(named("definition-retry")) {
+                scoped { Value() }.onClose {
+                    assertTrue(closingScope.closed)
+                    assertFailsWith<org.koin.core.error.ClosedScopeException> { closingScope.get<Value>() }
+                    closingScope.close() // Reentrant cleanup must not invoke onClose twice.
+                    if (++attempts == 1) error("definition onClose")
+                }
+            }
+        }) }
+        try {
+            closingScope = app.koin.createScope("definition-retry", named("definition-retry"), source)
+            val value = closingScope.get<Value>()
+            closingScope.registerCallback(object : ScopeCallback {
+                override fun onScopeClose(scope: Scope) { callbacks++ }
+            })
+            assertFailsWith<IllegalStateException> { closingScope.close() }
+            assertFalse(closingScope.closed)
+            assertSame(closingScope, app.koin.getScopeOrNull("definition-retry"))
+            assertSame(source, closingScope.getSource<Any>())
+            assertSame(value, closingScope.get<Value>())
+            closingScope.close()
+            closingScope.close()
+            assertTrue(closingScope.closed)
+            assertNull(app.koin.getScopeOrNull("definition-retry"))
+            assertNull(closingScope.getSource<Any>())
+            assertEquals(2, attempts)
+            assertEquals(1, callbacks)
+        } finally { app.close() }
+    }
+
     @Test fun throwingScopeCallbackCanRetryWithoutLeavingClosingGateSet() {
         var callbacks = 0
         var disposed = 0

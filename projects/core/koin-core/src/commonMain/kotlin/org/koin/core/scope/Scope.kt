@@ -432,10 +432,16 @@ class Scope(
             _callbacks.forEach { it.onScopeClose(this) }
             _callbacks.clear()
             _closed = true
+            try {
+                _koin.scopeRegistry.deleteScope(this)
+            } catch (error: Throwable) {
+                // Definition onClose runs with resolution closed, but failed cleanup must remain retryable.
+                _closed = false
+                throw error
+            }
             sourceValue = null
             parameterStack?.get()?.clear()
             parameterStack = null
-            _koin.scopeRegistry.deleteScope(this)
         } finally { closing = false }
     }
 
