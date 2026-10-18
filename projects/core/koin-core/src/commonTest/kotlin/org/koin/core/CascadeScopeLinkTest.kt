@@ -4,15 +4,42 @@ import org.koin.Simple
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.getScopeId
 import org.koin.core.logger.Level
+import org.koin.core.qualifier.named
 import org.koin.core.resolution.flatten
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
+import kotlin.test.assertSame
 
 @OptIn(KoinInternalApi::class)
 class CascadeScopeLinkTest {
+
+    @Test
+    fun single_parent_link_resolves_parent_before_root_fallback() {
+        val app = koinApplication {
+            modules(module {
+                single { Simple.ComponentA() }
+                single(named("root")) { Simple.ComponentA() }
+                scope(named("parent")) { scoped { Simple.ComponentA() } }
+                scope(named("child")) { }
+            })
+        }
+        try {
+            val koin = app.koin
+            val parent = koin.createScope("parent", named("parent"))
+            val child = koin.createScope("child", named("child"))
+            child.unlink(koin.getScope("_root_"))
+            child.linkTo(parent)
+            assertSame(parent.get<Simple.ComponentA>(), child.get<Simple.ComponentA>())
+            assertSame(koin.get<Simple.ComponentA>(named("root")), child.get<Simple.ComponentA>(named("root")))
+            assertNull(child.getOrNull<String>())
+        } finally {
+            app.close()
+        }
+    }
 
     @Test
     fun `flatten scope set`(){
