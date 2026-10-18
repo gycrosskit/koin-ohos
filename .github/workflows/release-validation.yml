@@ -1,5 +1,7 @@
 name: Fork release validation
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       version:
@@ -12,7 +14,7 @@ concurrency:
   group: fork-release-${{ github.run_id }}
   cancel-in-progress: false
 env:
-  VERSION: ${{ inputs.version }}
+  VERSION: ${{ github.event.release.tag_name || inputs.version }}
   CI_FORK_HOST_FALLBACK_IP: ${{ vars.CI_FORK_HOST_FALLBACK_IP }}
 defaults:
   run:
@@ -24,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
-          ref: ${{ inputs.version }}
+          ref: ${{ env.VERSION }}
           persist-credentials: false
       - name: Load pinned public verifier
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -49,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
-          ref: ${{ inputs.version }}
+          ref: ${{ env.VERSION }}
           persist-credentials: false
       - name: Load pinned runner helpers
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
