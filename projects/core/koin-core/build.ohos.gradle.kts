@@ -2,6 +2,11 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
 kotlin {
     jvm { compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8) }
     iosArm64()
