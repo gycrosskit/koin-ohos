@@ -5,7 +5,7 @@ plugins {
 subprojects {
     // Keep the published upstream Native KLIB identity; the Maven group below is fork-specific.
     group = "io.insert-koin"
-    version = providers.environmentVariable("VERSION").orElse("4.1.1-ohos-2.2.21-7").get()
+    version = providers.environmentVariable("VERSION").orElse("4.1.1-ohos-2.2.21-8-rc.1").get()
     plugins.apply("maven-publish")
     extensions.configure<org.gradle.api.publish.PublishingExtension> {
         publications.withType<org.gradle.api.publish.maven.MavenPublication>().configureEach {

@@ -1,3 +1,11 @@
+# GY CrossKit fork 更新日志
+
+## 4.1.1-ohos-2.2.21-8-rc.1（准备中，2026-10-18）
+
+- Scope 的 onClose 失败后保留可重试清理状态；CoreResolver 修复扩展解析优先级与单父级链查找，保留父级优先、root fallback 与空结果合同。
+- 保留原有解析/注入回归，维护 JVM、iOS 和 OHOS Core；不发布 Compose/Kuikly ViewModel 扩展。
+- Maven 候选只更新 Koin Core，Stately 保持 2.1.0-ohos-2.2.21-11；归档、完整 CI 与精确公开消费待本 RC 证据，设备运行仍未验收。
+
 # Latests Changes
 
 Badges: `[UPDATED]`, `[FIXED]`, `[NEW]`, `[DEPRECATED]`, `[REMOVED]`,  `[BREAKING]`, `[Experimental]`
