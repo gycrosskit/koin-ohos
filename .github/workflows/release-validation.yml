@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "GRADLE_USER_HOME=$RUNNER_TEMP/koin-release-gradle" >> "$GITHUB_ENV"
           printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
-          echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
+          echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security -Dsun.net.client.defaultConnectTimeout=30000 -Dsun.net.client.defaultReadTimeout=60000" >> "$GITHUB_ENV"
           bash .ci-shared/templates/ci-pin-fork-host.sh
       - name: Android and JVM public dependency consumption
         run: |

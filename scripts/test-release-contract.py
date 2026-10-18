@@ -10,6 +10,24 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ReleaseContractTest(unittest.TestCase):
+    def test_source_and_public_downloads_have_bounded_waits(self):
+        workflows = [(ROOT / ".github/workflows" / name).read_text() for name in
+                     ["fork-source-regression.yml", "release-validation.yml"]]
+        assignments = [line for workflow in workflows for line in workflow.splitlines()
+                       if 'echo "JAVA_TOOL_OPTIONS=' in line]
+        self.assertEqual(3, len(assignments))
+        for line in assignments:
+            self.assertIn("-Dsun.net.client.defaultConnectTimeout=30000", line)
+            self.assertIn("-Dsun.net.client.defaultReadTimeout=60000", line)
+        for workflow in workflows:
+            commands = [line for line in workflow.splitlines() if "python3 .ci-shared/templates/ci-run.py " in line]
+            self.assertEqual(3, len(commands))
+            self.assertTrue(all("--no-progress-seconds 300" in line for line in commands))
+            self.assertIn("timeout-minutes: 90", workflow)
+        source_commands = [line for line in workflows[0].splitlines() if "bash projects/gradlew " in line]
+        self.assertEqual(2, len(source_commands))
+        self.assertTrue(all("--rerun-tasks" in line and "--no-build-cache" in line for line in source_commands))
+
     def test_upstream_release_is_disabled_for_fork(self):
         workflow = (ROOT / ".github/workflows/release.yml").read_text()
         condition = re.search(r"^  release:\n    if: (.+)$", workflow, re.M).group(1)
