@@ -15,6 +15,7 @@ env:
 
 jobs:
   release:
+    if: github.repository == 'InsertKoinIO/koin'
     runs-on: macos-latest
 
     steps:

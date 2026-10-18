@@ -10,6 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ReleaseContractTest(unittest.TestCase):
+    def test_upstream_release_is_disabled_for_fork(self):
+        workflow = (ROOT / ".github/workflows/release.yml").read_text()
+        condition = re.search(r"^  release:\n    if: (.+)$", workflow, re.M).group(1)
+        self.assertEqual("github.repository == 'InsertKoinIO/koin'", condition)
+        for repository, allowed in [("InsertKoinIO/koin", True), ("gycrosskit/koin-ohos", False)]:
+            self.assertEqual(allowed, eval(condition.replace("github.repository", "repository"),
+                                           {"__builtins__": {}}, {"repository": repository}))
+
     def test_remote_repository_guard_rejects_overrides(self):
         settings = (ROOT / "verification-consumer/settings.gradle.kts").read_text()
         expression = re.search(r'require\((koinRepository[^\n]+)\) \{', settings).group(1)

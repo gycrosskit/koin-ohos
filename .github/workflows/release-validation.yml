@@ -46,8 +46,6 @@ jobs:
     needs: verify-public
     runs-on: macos-15
     timeout-minutes: 90
-    env:
-      GRADLE_USER_HOME: ${{ runner.temp }}/koin-release-gradle
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
@@ -66,6 +64,7 @@ jobs:
           java-version: '17'
       - name: Configure verified fork host
         run: |
+          echo "GRADLE_USER_HOME=$RUNNER_TEMP/koin-release-gradle" >> "$GITHUB_ENV"
           printf 'networkaddress.cache.ttl=3600\nnetworkaddress.cache.negative.ttl=0\n' > "$RUNNER_TEMP/ci-java.security"
           echo "JAVA_TOOL_OPTIONS=-Djava.security.properties=$RUNNER_TEMP/ci-java.security" >> "$GITHUB_ENV"
           bash .ci-shared/templates/ci-pin-fork-host.sh
