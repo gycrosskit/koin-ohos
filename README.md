@@ -1,6 +1,6 @@
 # GY CrossKit Koin OpenHarmony
 
-本库提供基础设施 Core，CMP/Kuikly 使用相同平台实现；没有独立 UI 模块。 五种消费入口、公开功能组、平台限制及 **4.1.1-ohos-2.2.21-7**的验证范围见 [功能与平台差异](docs/功能与平台差异.md)。发布状态以对应 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-7) 为准；设备验收边界见功能页。
+本库提供基础设施 Core，原生宿主与 Kuikly 使用相同平台实现；没有独立 UI 模块。三端消费入口、公开功能组、平台限制及 **4.1.1-ohos-2.2.21-7**的验证范围见 [功能与平台差异](docs/功能与平台差异.md)。发布状态以对应 [Release](https://github.com/gycrosskit/koin-ohos/releases/tag/4.1.1-ohos-2.2.21-7) 为准；设备验收边界见功能页。
 
 为 Android、iOS 和 OpenHarmony 的 Kotlin Multiplatform 共享代码提供依赖注入。基于 [Koin 4.1.1](https://github.com/InsertKoinIO/koin)，保留 `org.koin` API，增加 `ohosArm64` 发布变体。
 
@@ -118,7 +118,7 @@ kotlin {
 }
 ```
 
-Gradle 根据 KMP 元数据选择平台产物，并传递引入 Stately OpenHarmony `2.1.0-ohos-2.2.21-11`。本 fork 坐标与上游 `io.insert-koin:koin-core` 不同；与官方 Koin Compose 同用时按[接入指南](docs/接入指南.md#与官方-koin-compose-同用)配置依赖替换，避免重复 Native KLIB。
+Gradle 根据 KMP 元数据选择平台产物，并传递引入 Stately OpenHarmony `2.1.0-ohos-2.2.21-11`。本 fork 坐标与上游 `io.insert-koin:koin-core` 不同；原生宿主或 Kuikly 须保证每个 Core 只解析一份 Native KLIB，身份约定与旧版兼容验证见[接入指南](docs/接入指南.md#依赖身份与历史兼容验证)。
 
 ## 快速使用
 
@@ -144,7 +144,7 @@ application.close()
 
 ## 文档与支持
 
-- [接入指南](docs/接入指南.md)：官方 Compose 依赖替换和容器生命周期。
+- [接入指南](docs/接入指南.md)：依赖身份、历史兼容验证和容器生命周期。
 - [构建与验证](OHOS_PORT.md)：发布流程、独立消费工程和验收范围。
 - [上游英文介绍](README_EN.md)、[Koin 文档](https://insert-koin.io/docs/reference/koin-core/dsl/)：通用 API；其中上游坐标不能代替本 fork 的鸿蒙坐标。
 - [GitHub Releases](https://github.com/gycrosskit/koin-ohos/releases)：版本与发布归档；JitPack 使用同版本的 Maven 归档提供依赖。
