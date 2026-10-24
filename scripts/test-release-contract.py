@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -10,6 +11,37 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ReleaseContractTest(unittest.TestCase):
+    def test_packaging_version_is_checked_before_gradle(self):
+        cases = {
+            '4.1.1-ohos-2.2.21-8': True,
+            '4.1.1-ohos-2.2.21-8-rc.1': True,
+            '0.9.0-rc.0': True,
+            '1.0.0': False,
+            'main': False,
+            '4.1.1-ohos-2.2.21-0': False,
+            '4.1.1-ohos-2.2.21-8;touch': False,
+            '../../outside': False,
+        }
+        for version, allowed in cases.items():
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                (root / 'scripts').mkdir()
+                (root / 'projects').mkdir()
+                (root / 'bin').mkdir()
+                shutil.copyfile(ROOT / 'scripts/package-maven.sh', root / 'scripts/package-maven.sh')
+                git = root / 'bin/git'
+                git.write_text('#!/bin/sh\nif [ "$1" = rev-parse ]; then printf "%040d\\n" 0; fi\n')
+                git.chmod(0o700)
+                (root / 'projects/gradlew').write_text('printf "%s" "$VERSION" > gradle-reached\nexit 73\n')
+                environment = {**os.environ, 'VERSION': version, 'PATH': str(root / 'bin') + ':' + os.environ['PATH']}
+                result = subprocess.run(['bash', str(root / 'scripts/package-maven.sh')],
+                    env=environment, capture_output=True, text=True, timeout=10)
+                marker = root / 'gradle-reached'
+                self.assertEqual(73 if allowed else 1, result.returncode)
+                self.assertEqual(allowed, marker.exists())
+                if allowed:
+                    self.assertEqual(version, marker.read_text())
+
     def test_retired_compose_has_no_modules_or_build_references(self):
         for path in ["projects/compose", "examples/sample-android-compose", "examples/sample-desktop-compose"]:
             self.assertFalse((ROOT / path).exists(), path)
