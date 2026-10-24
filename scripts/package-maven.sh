@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-: "${VERSION:?Provide the immutable RC version}"
-[[ "$VERSION" =~ ^[0-9][0-9A-Za-z._-]*-rc\.[0-9]+$ ]] || { echo 'Expected an immutable RC version' >&2; exit 1; }
+: "${VERSION:?Provide the immutable release version}"
+# Formal adaptations retain the upstream and compiler versions; bare versions can collide with upstream tags.
+[[ "$VERSION" =~ ^[0-9][0-9A-Za-z._-]*-rc\.[0-9]+$ || "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-ohos-[0-9]+\.[0-9]+\.[0-9]+-[1-9][0-9]*$ ]] || { echo 'Expected an immutable RC or upstream OHOS adaptation version' >&2; exit 1; }
 repository="koin-ohos"
 staging="build/release-maven"
 output="build/release/$VERSION"
